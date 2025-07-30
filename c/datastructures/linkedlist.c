@@ -6,6 +6,31 @@ typedef struct node{
   struct node *next;
 } node;
 
+void push_node(node **head, int  num) {
+  node *new_node = (node *)malloc(sizeof(node));
+
+  new_node->data = num;
+  new_node->next = *head;
+
+  *head = new_node;
+}
+
+int pop_node(node **head, int num) {
+  node *next_node = NULL;
+  int retval = -1;
+
+  if(*head == NULL) {
+    puts("Cannot pop node from list!");
+  }
+
+  next_node = (*head)->next;
+  retval = (*head)->data;
+
+  free(*head);
+  *head = next_node;
+
+  return retval;
+}
 
 int main(int argc, char **argv) {
   // Creates a list where we store the values, this is the head of the list
