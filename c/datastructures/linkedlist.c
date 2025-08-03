@@ -7,15 +7,19 @@ typedef struct node{
 } node;
 
 void push_node(node **head, int  num) {
+  // Allocate memory for a new now
   node *new_node = (node *)malloc(sizeof(node));
 
+  // Prepend the node to the list
   new_node->data = num;
   new_node->next = *head;
 
+  // Update the head
   *head = new_node;
 }
 
-int pop_node(node **head, int num) {
+// Retrieves the data and remove from the list (the head)
+int pop_node(node **head) {
   node *next_node = NULL;
   int retval = -1;
 
