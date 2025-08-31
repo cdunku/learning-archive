@@ -34,6 +34,8 @@ size_t hash_key(char *k) {
 char *get_hash_value(hash_table *table, char *k) {
 
   size_t index = hash_key(k) % table->capacity;
+  // This specific line is important, *item points to the head of the bucket inside the specific index in the hash table
+  // Then we can basically consider this as a normal linked list
   hash_info *item = table->items[index];
 
   while(item != NULL) {
@@ -108,12 +110,18 @@ void resize_hash_table(hash_table *table) {
   // Increase the table capacity
   table->capacity *= 2;
 
+  // Create a new table and allocate the necessary memory
   hash_info **new_items = calloc(table->capacity, sizeof(hash_info *));
 
   for(size_t i = 0; i < table->capacity / 2; i++) {
+    // Pointer that points to the head of the list
     hash_info *node = table->items[i];
     while(node != NULL) {
+      // Since every value-key pair has a specific hash, 
+      // we recompute each hash and get the index in order to copy everything properly
       size_t rehash_index = hash_key(node->key) % table->capacity;
+      // We save the node of the node we are currently pointing to
+      // If we do not do this the data will be lost to the first value 
       hash_info *next = node->next;
 
       node->next = new_items[rehash_index];
@@ -122,6 +130,7 @@ void resize_hash_table(hash_table *table) {
       node = next;
     } 
   }
+  // Free the current table and assign the new table to the items struct member
   free(table->items);
   table->items = new_items;
 }
