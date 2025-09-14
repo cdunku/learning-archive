@@ -24,6 +24,16 @@ typedef struct ht_info {
 typedef struct ht {
 
   size_t capacity;
+  // Additionally, I could have added another variables that kept track of (deleted + available).
+  // Because while expanding the table, the length of the available data decreases.
+  // But the table expands according to the available data, not the tombstones as well.
+  // Which in return makes the overall time complexity slower, like it is searching through an available key-value pair.
+  // But I might implement this later.
+  // 
+  // It would look something like this:
+  //
+  // size_t active_pairs;
+  // size_t total_pairs;
   size_t length;
   ht_info **items;
 
@@ -72,9 +82,7 @@ ht *table_expand(ht *table) {
 
   for(size_t i = 0; i < table->capacity; i++) {
     // If the specific index in the old array is NULL, go to next index.
-    if(table->items[i] == NULL || table->items[i]->tombstone) {
-      continue;
-    }
+    if(table->items[i] == NULL || table->items[i]->tombstone) { continue; }
     // We rehash the key-value pairs because their position in the new array might change.
     // Something that was previously in index 3 can be in index 8.
     // This all depends on the capacity of the table.
@@ -97,7 +105,7 @@ ht *table_expand(ht *table) {
 
 void set_key_val(ht* table, char *k, char *v) {
 
-  if(table->length > table->capacity) { table = table_expand(table); }
+  if(table->length >= (table->capacity * 0.7)) { table = table_expand(table); }
 
   size_t index = hash_key(k) % table->capacity;
 
@@ -106,6 +114,14 @@ void set_key_val(ht* table, char *k, char *v) {
 
   // Even if try == index, loop through the list at least once
   do {
+    if(table->items[try] != NULL && !table->items[try]->tombstone &&
+      strcmp(k, table->items[try]->key) == 0) {
+
+      free(table->items[try]->value);
+      table->items[try]->value = strdup(v);
+
+      return;
+    }
     if(table->items[try] == NULL || table->items[try]->tombstone) {
       ht_info *item = malloc(sizeof(ht_info));
 
@@ -151,6 +167,7 @@ void delete_key_val(ht* table, char *k) {
   while(table->items[try] != NULL) {
     if(strcmp(table->items[try]->key, k) == 0) {
       table->items[try]->tombstone = true;
+      table->length--;
       return;
     }
     i++;
