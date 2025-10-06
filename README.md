@@ -4,4 +4,4 @@ I am making this archive public so you too can learn with me.
 
 This repository will hold things from the most basic things to more complicating concepts and subjects.
 
-I try my best at commenting parts of code that might need time to understand.
+I try my best at commenting parts of code that might need time to understand. When commenting code, I use AI for explanation and assistance.
