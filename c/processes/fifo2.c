@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
   int fd = open("sum", O_RDONLY);
 
 
-  for(size_t i = 0; i < 5; i++) {
+  for(size_t i = 0; i < arr_len; i++) {
     if(read(fd, &arr[i], sizeof(int)) == -1) {
       printf("Could not read from the file\n");
       return 1;
@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
   }
 
   int sum;
-  for(size_t i = 0; i < 5; i++) {
+  for(size_t i = 0; i < arr_len; i++) {
     sum += arr[i];
   }
 
