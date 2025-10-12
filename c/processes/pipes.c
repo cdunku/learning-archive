@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
 
   // Checks whether if we have a child process.
   if(id == 0) {
+    // Child process
     // Here we write the file descriptor
     // Even though we do not use read in this case, it is good practice to disable reading in this case.
     close(fd[0]);
@@ -33,6 +34,7 @@ int main(int argc, char **argv) {
     close(fd[1]);
   }
   else {
+    // Parent process
     // Same logic as in close(fd[0]), but this time we are reading
     close(fd[1]);
     int y;

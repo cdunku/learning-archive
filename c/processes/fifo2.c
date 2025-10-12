@@ -12,6 +12,10 @@ int main(int argc, char **argv) {
   size_t arr_len = sizeof(arr) / sizeof(arr[0]);
   int fd = open("sum", O_RDONLY);
 
+  if(fd == -1) {
+    printf("Something went wrong when opening FIFO file\n");
+  }
+
 
   for(size_t i = 0; i < arr_len; i++) {
     if(read(fd, &arr[i], sizeof(int)) == -1) {

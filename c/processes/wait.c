@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
   // Since both the processes can work simultaenously by themselves and can interfere,
   // (the numbers can be printed out in any order) we will check whether if the pid is a child process.
   // If it is not, we will halt the main process and execute the child process first.
-  if(pid != 0) { wait(&pid); }
+  if(pid > 0) { wait(NULL); }
 
   for(int i = n; i < n + 5; i++) {
     printf("%d - ", i);

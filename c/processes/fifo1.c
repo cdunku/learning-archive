@@ -11,6 +11,15 @@
 // NOTE: FILES fifo1.c AND fifo2.c ARE INTERLINKED!
 
 int main(int argc, char **argv) {
+  // When the FIFO file is created for the first time, 
+  // it does not give an error.
+  // But when we run the program the next time it will return -1,
+  // if the FIFO file exists.
+  // To combat the error, mkfifo returns the EEXIST flag which means
+  // the FIFO file exists. If the error is not because of it existing,
+  // then it prints out a message.
+  //
+  // 0777 all permissions have the right to access the file.
   if(mkfifo("sum", 0777) == -1) {
     if(errno != EEXIST) {
       printf("Something went wrong creating the FIFO file\n");
