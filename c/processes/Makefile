@@ -1,2 +1,2 @@
 clean:
-	rm -rf a.out
+	rm -rf a.out *.txt

@@ -21,13 +21,40 @@ int main(int argc, char **argv, char **envp) {
     // then we must include the full path for the specific command we are using.
     // 
     // execlp(file, arg0, arg1, ..., NULL)
-    execlp("ping", "ping", "-c", "3" ,"google.com", NULL);
+    //
+    // Other exec* variants include (v) - vector, e - environment
+    // Where v - needs an array of list of arguments 
+    // and e - needs an array of environment variables 
+    // So something like:
+    // char *arr[] = { "ping", "-c", "3", "google.com", NULL };
+    // char *env[] = { "TEST=enviorenment variable", NULL };
+    // execvpe("ping", arr, env);
+    // Also exec() also works with one specific command,
+    // adding a pipe "|" like in a bash script will not work.
+    int err = execlp("ping", "ping", "-c", "3" ,"google.com", NULL);
+    if(err != 0) {
+      printf("Something was wrong with executing ping.\n");
+      return 1;
+    }
   }
   else {
     // Parent process
-    wait(NULL);
+    int pstatus;
+    // Inserting an int instead of NULL retrieves the code returned from wait().
+    // which can tell us what might have happened if an error occurred.
+    wait(&pstatus);
+    // WIFEXITED checks whether if the process terminated properly.
+    if(WIFEXITED(pstatus)) {
+      // Retrieves the status code
+      int pstatus_code = WEXITSTATUS(pstatus);
+      if(pstatus_code == 0) {
+        printf("Sucess!\n");
+      }
+      else {
+        printf("Failure\n");
+      }
+    }
     printf("Child process executed\n");
-    printf("Success!\n");
   }
 
   return 0;
